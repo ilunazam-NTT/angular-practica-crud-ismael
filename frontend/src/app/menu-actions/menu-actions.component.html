@@ -1,0 +1,26 @@
+<button
+  appButtonType
+  [cdkMenuTriggerFor]="menu"
+  class="example-standalone-item"
+>
+  Acciones
+</button>
+
+<ng-template #menu>
+  <div class="example-menu" cdkMenu>
+    <button
+      cdkMenuItem
+      class="example-menu-item"
+      (cdkMenuItemTriggered)="editar()"
+    >
+      Editar
+    </button>
+    <button
+      cdkMenuItem
+      class="example-menu-item"
+      (cdkMenuItemTriggered)="eliminar()"
+    >
+      Eliminar
+    </button>
+  </div>
+</ng-template>

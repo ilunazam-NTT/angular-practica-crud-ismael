@@ -1,0 +1,12 @@
+nav {
+  font-size: 14px;
+  padding: 1rem;
+}
+
+nav a {
+  text-decoration: none;
+}
+
+nav span {
+  color: gray;
+}

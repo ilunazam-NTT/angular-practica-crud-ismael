@@ -1,0 +1,33 @@
+<h1>Listado coches</h1>
+<button
+  appButtonType="primary"
+  role="link"
+  [routerLink]="'/cars/create'"
+  type=""
+>
+  Añadir Nuevo Coche
+</button>
+<table class="cars-table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Marca</th>
+      <th>Modelo</th>
+      <th>Total</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (car of cars; track car) {
+      <tr>
+        <td>
+          <a [routerLink]="['/cars', car.id]">{{ car.id }}</a>
+        </td>
+        <td>{{ car.brand }}</td>
+        <td>{{ car.model }}</td>
+        <td>{{ car.total }}</td>
+        <td><app-menu-actions /></td>
+      </tr>
+    }
+  </tbody>
+</table>
