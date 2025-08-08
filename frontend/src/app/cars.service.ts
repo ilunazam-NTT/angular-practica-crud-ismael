@@ -1,0 +1,38 @@
+import { inject, Injectable } from '@angular/core'
+import { HttpClient } from '@angular/common/http'
+import { Observable } from 'rxjs'
+import { Car, CarSummary, CreateCarDto } from './car.interface'
+
+@Injectable({
+  providedIn: 'root',
+})
+export class CarsService {
+  private apiUrl = 'http://localhost:3000'
+
+  private http = inject(HttpClient)
+
+  // Get all cars
+  getCars(): Observable<CarSummary[]> {
+    return this.http.get<CarSummary[]>(`${this.apiUrl}/cars`)
+  }
+
+  // Get a car by ID
+  getCarById(id: string): Observable<Car> {
+    return this.http.get<Car>(`${this.apiUrl}/cars/${id}`)
+  }
+
+  // Create a new car
+  createCar(car: CreateCarDto): Observable<CreateCarDto> {
+    return this.http.post<CreateCarDto>(`${this.apiUrl}/cars`, car)
+  }
+
+  // Update a car by ID
+  updateCar(id: string, car: CreateCarDto): Observable<CreateCarDto> {
+    return this.http.put<CreateCarDto>(`${this.apiUrl}/cars/${id}`, car)
+  }
+
+  // Delete a car by ID
+  deleteCar(id: string): Observable<string> {
+    return this.http.delete<string>(`${this.apiUrl}/cars/${id}`)
+  }
+}
