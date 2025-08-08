@@ -1,0 +1,45 @@
+
+/* Estilo para los campos de marca y modelo */
+select.form-control, input.form-control {
+    width: 100%; 
+    padding: 10px; 
+    box-sizing: border-box; 
+
+/* Estilo para los detalles del coche */
+.car-details {
+    display: flex;
+    flex-wrap: wrap; 
+    flex-direction: column;
+    gap: 20px; 
+}
+
+/* Estilo para cada grupo de detalles */
+.detail-group {
+    flex: 1 1 calc(50% - 20px); /* Dos columnas, ajustando el tamaño */
+    box-sizing: border-box; 
+    margin-bottom: 20px;
+    border: solid 1px rgb(211, 211, 211);
+    padding: 10px 30px 40px 30px;
+    box-shadow: 3px 3px 5px rgb(234, 233, 233);
+    border-radius: 10px;
+}
+
+.detail-fields {
+  display: flex; 
+  flex-wrap: wrap; 
+}
+
+.form-group {
+  flex: 1 1 50%; /* Cada campo ocupa el 50% del ancho */
+  box-sizing: border-box; 
+  padding: 10px 15px; 
+}
+
+.form-group label {
+  display: block; 
+  margin-bottom: 5px; 
+}
+
+.field-availability input{
+ width: auto;
+}
