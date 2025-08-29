@@ -43,6 +43,7 @@
             type="date"
             formControlName="registrationDate"
             class="form-control"
+            [max]="today"
           />
           <div
             *ngIf="
@@ -52,22 +53,38 @@
           >
             Registration Date is required.
           </div>
+          <div
+            *ngIf="detail.get('registrationDate')?.errors?.['maxDateExceeded']"
+          >
+            La fecha no puede ser posterior a hoy ({{
+              detail.get('registrationDate')?.errors?.['maxDateExceeded']?.max
+            }}).
+          </div>
+          <div
+            *ngIf="
+              carForm.get('carDetails')?.errors?.['registrationDateInvalid']
+            "
+          >
+            La fecha de registro no puede ser anterior al año de fabricación.
+          </div>
         </div>
 
         <div class="form-group">
-          <label for="mileage">Kilometraje</label>
+          <label for="manufactureYear">Año de fabricación</label>
           <input
-            id="mileage"
+            id="manufactureYear"
             type="number"
-            formControlName="mileage"
+            formControlName="manufactureYear"
             class="form-control"
           />
           <div
             *ngIf="
-              detail.get('mileage')?.invalid && detail.get('mileage')?.touched
+              detail.get('manufactureYear')?.invalid &&
+              detail.get('manufactureYear')?.touched
             "
           >
-            Mileage is required and must be a positive number.
+            Manufacture Year is required and must be a valid year (1900 -
+            current year).
           </div>
         </div>
 
@@ -104,25 +121,6 @@
         </div>
 
         <div class="form-group">
-          <label for="manufactureYear">Año de fabricación</label>
-          <input
-            id="manufactureYear"
-            type="number"
-            formControlName="manufactureYear"
-            class="form-control"
-          />
-          <div
-            *ngIf="
-              detail.get('manufactureYear')?.invalid &&
-              detail.get('manufactureYear')?.touched
-            "
-          >
-            Manufacture Year is required and must be a valid year (1900 -
-            current year).
-          </div>
-        </div>
-
-        <div class="form-group">
           <label for="licensePlate">Matrícula</label>
           <input
             id="licensePlate"
@@ -139,6 +137,22 @@
           </div>
         </div>
 
+        <div class="form-group">
+          <label for="mileage">Kilometraje</label>
+          <input
+            id="mileage"
+            type="number"
+            formControlName="mileage"
+            class="form-control"
+          />
+          <div
+            *ngIf="
+              detail.get('mileage')?.invalid && detail.get('mileage')?.touched
+            "
+          >
+            Mileage is required and must be a positive number.
+          </div>
+        </div>
         <div class="form-group field-availability">
           <label for="availability">Disponibilidad</label>
           <input
@@ -149,6 +163,14 @@
           />
         </div>
       </div>
+      <button
+        *ngIf="i > 0"
+        type="button"
+        appButtonType="secondary"
+        (click)="removeCarDetail(i)"
+      >
+        x Quitar Detalle Coche
+      </button>
     </div>
   </div>
 
@@ -156,7 +178,7 @@
     type="button"
     appButtonType="secondary"
     (click)="addCarDetail()"
-    [disabled]="!isFirstDetailValid()"
+    [disabled]="carDetails.invalid || brand.invalid || model.invalid"
   >
     + Añadir Detalle Coche
   </button>

@@ -2,17 +2,28 @@ import { Component, inject, OnInit } from '@angular/core'
 import {
   Validators,
   FormArray,
-  FormBuilder,
   ReactiveFormsModule,
   ValidatorFn,
   AbstractControl,
   ValidationErrors,
+  FormGroup,
+  NonNullableFormBuilder,
 } from '@angular/forms'
 import { CommonModule } from '@angular/common'
 import { BrandsService } from '../brands.service'
 import { CarsService } from '../cars.service'
-import { CarDetailsDto, CreateCarDto, Currency } from '../car.interface'
+import { CarDetailsDto, CarDetailsDtoForm, CreateCarDto, Currency } from '../car.interface'
 import { ButtonDirective } from '../button.directive'
+import { NotificationService } from '../notification.service'
+import { Router } from '@angular/router'
+
+const LICENSE_PLATE_REGEX = /^[0-9]{4}\s?[A-Z]{3}$/
+const MAX_MANUFACTURE_DATE = new Date().getFullYear()
+const MIN_MANUFACTURE_DATE = 1900
+const MAX_REGISTRATION_DATE = new Date()
+const MIN_PRICE = 1
+const MIN_MILEAGE = 0
+const MAX_STRING_LENGTH = 50
 
 @Component({
   selector: 'app-add-car',
@@ -21,24 +32,28 @@ import { ButtonDirective } from '../button.directive'
   styleUrl: './add-car.component.css',
 })
 export class AddCarComponent implements OnInit {
-  brands: string[] = []
-  models: string[] = []
 
-  currencies = Object.values(Currency)
-
-  private formBuilder = inject(FormBuilder)
+  private formBuilder = inject(NonNullableFormBuilder)
   private brandService = inject(BrandsService)
   private carsService = inject(CarsService)
+  private notificationService = inject (NotificationService)
+  private router = inject(Router)
+  
+  today = MAX_REGISTRATION_DATE
+  brands: string[] = []
+  models: string[] = []
+  carForm = this.formBuilder.group({
+      brand: ['', [Validators.required, Validators.maxLength(MAX_STRING_LENGTH)]],
+      model: ['', [Validators.required, Validators.maxLength(MAX_STRING_LENGTH)]],
+      carDetails: this.formBuilder.array<FormGroup<CarDetailsDtoForm>>([], registrationDateValidator()), // Inicializa el FormArray
+    })
 
-  carForm = this.formBuilder?.group({
-    brand: ['', Validators.required],
-    model: ['', Validators.required],
-    carDetails: this.formBuilder?.array([], registrationDateValidator()), // Inicializa el FormArray
-  })
+  currencies = Object.values(Currency)
 
   ngOnInit(): void {
     this.loadBrands()
     this.addCarDetail()
+    //this.carDetails.controls.at(0)?.controls.
   }
 
   loadBrands(): void {
@@ -59,7 +74,8 @@ export class AddCarComponent implements OnInit {
     this.brandService.getModelByBrand(brandId).subscribe(
       (data) => {
         this.models = data
-        this.carForm.get('model')?.reset() // Resetea el modelo al cambiar la marca
+          //this.carEditForm.get('model')?.reset() 
+          this.carForm.get('model')?.setValue("") // Resetea el modelo al cambiar la marca
       },
       (error) => {
         console.error('Error fetching models:', error)
@@ -67,41 +83,47 @@ export class AddCarComponent implements OnInit {
     )
   }
 
-  get carDetails(): FormArray {
-    return this.carForm.get('carDetails') as FormArray
+  get carDetails() {
+    return this.carForm.controls.carDetails
+  }
+
+  get brand() {
+    return this.carForm.controls.brand
+  }
+
+  get model() {
+    return this.carForm.controls.model 
   }
 
   addCarDetail(): void {
-    const carDetailGroup = this.formBuilder?.group({
-      registrationDate: ['', Validators.required],
-      mileage: [0, [Validators.required, Validators.min(0)]],
-      currency: ['', Validators.required],
-      price: [0, [Validators.required, Validators.min(0)]],
-      manufactureYear: [
+    const carDetailGroup = this.formBuilder.group<CarDetailsDtoForm>({
+      registrationDate: this.formBuilder.control('', {validators: [Validators.required, maxDateValidator()]}),
+      mileage: this.formBuilder.control(0, [Validators.required, Validators.min(MIN_MILEAGE)]), 
+      currency: this.formBuilder.control('', [Validators.required, currencyValidator()]), 
+      price: this.formBuilder.control(0, [Validators.required, Validators.min(MIN_PRICE)]), 
+      manufactureYear: this.formBuilder.control(
         new Date().getFullYear(),
         [
           Validators.required,
-          Validators.min(1900),
-          Validators.max(new Date().getFullYear()),
-        ],
-      ],
-      availability: [false],
-      licensePlate: [
-        '',
-        [Validators.required, Validators.pattern(/^[0-9]{4} [A-Z]{3}$/)],
-      ],
+          Validators.min(MIN_MANUFACTURE_DATE),
+          Validators.max(MAX_MANUFACTURE_DATE),
+        ]
+      ), 
+      availability: this.formBuilder.control(false), 
+      licensePlate: this.formBuilder.control('',
+        [Validators.required, Validators.pattern(LICENSE_PLATE_REGEX)]), 
     })
 
     this.carDetails.push(carDetailGroup)
   }
 
-  isFirstDetailValid(): boolean | undefined {
-    const firstDetail = this.carDetails.at(0)
-    return (
-      firstDetail.valid &&
-      this.carForm.get('brand')?.valid &&
-      this.carForm.get('model')?.valid
-    )
+  
+  removeCarDetail(detailId: number): void {
+    if (detailId > 0) {
+      if (confirm('¿Eliminar este detalle?')) {
+        this.carDetails.removeAt(detailId)
+      }
+    }
   }
 
   onSubmit(): void {
@@ -122,7 +144,7 @@ export class AddCarComponent implements OnInit {
       }
 
       this.saveData(carData)
-      console.log('Form Submitted:', carData)
+      
     } else {
       console.log('Form is invalid')
     }
@@ -132,9 +154,12 @@ export class AddCarComponent implements OnInit {
     this.carsService.createCar(carData).subscribe(
       (response) => {
         console.log('Data sent successfully:', response)
+        this.notificationService.showSuccess('El coche ha sido creado y guardado con éxito');
+        this.router.navigate(['']);
       },
       (error) => {
         console.error('Error sending data:', error)
+        this.notificationService.showError('El coche no se ha podido crear');
       }
     )
   }
@@ -142,22 +167,64 @@ export class AddCarComponent implements OnInit {
 
 export function registrationDateValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
-    const carDetails = control.get('carDetails') as FormArray
+    const carDetails = control as FormArray;
 
-    if (carDetails) {
-      const firstDetail = carDetails.at(0) // Obtener el primer detalle
-      const manufactureYear = firstDetail.get('manufactureYear')?.value
-      const registrationDate = firstDetail.get('registrationDate')?.value
+    if (!carDetails || carDetails.length === 0) {
+      return null;
+    }
+
+    for (let i = 0; i < carDetails.length; i++) {
+      const detail = carDetails.at(i) as FormGroup;
+      const manufactureYear = detail.get('manufactureYear')?.value;
+      const registrationDate = detail.get('registrationDate')?.value;
 
       if (registrationDate && manufactureYear) {
-        const regDate = new Date(registrationDate)
-        const minYear = new Date(manufactureYear, 0, 1) // Primer día del año de fabricación
+        const regDate = new Date(registrationDate);
+        const minYear = new Date(manufactureYear, 0, 1);
 
         if (regDate < minYear) {
-          return { registrationDateInvalid: true } // Devuelve un error si la fecha de registro es anterior al año de fabricación
+          return { registrationDateInvalid: true };
         }
       }
     }
-    return null // Si todo es válido, devuelve null
+
+    return null;
+  };
+}
+
+
+export function currencyValidator(allowed?: string[]): ValidatorFn {
+  const allowedValues = allowed ?? Object.values(Currency)
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value
+    if (value === null || value === undefined || value === '') {
+      return null // deja que Validators.required gestione el campo vacío
+    }
+    
+    return allowedValues.includes(value)
+      ? null
+      : { invalidCurrency: { value: control.value, allowed: allowedValues } }
+  }
+}
+export function maxDateValidator(maxDate?: Date): ValidatorFn {
+  // si no se pasa maxDate, usamos "hoy" (hora local, sin tiempo)
+  const max = maxDate ? maxDate : MAX_REGISTRATION_DATE.toISOString().substring(0, 10);
+
+  return (control: AbstractControl): ValidationErrors | null => {
+    const raw = control.value
+
+    // permitir que Validators.required gestione valores vacíos
+    if (raw === null || raw === undefined || raw === '') {
+      return null
+    }
+    
+   console.log(raw)
+   console.log(max)
+    // comparar fechas (solo año/mes/día)
+    if (raw > max) {
+      return { maxDateExceeded: { value: raw, max: max } }
+    }
+
+    return null
   }
 }
