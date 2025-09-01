@@ -11,8 +11,8 @@
       <option value="">Selecciona una marca</option>
       <option *ngFor="let brand of brands" [value]="brand">{{ brand }}</option>
     </select>
-    <div *ngIf="carForm.get('brand')?.invalid && carForm.get('brand')?.touched">
-      Brand is required.
+    <div class="error-msg" *ngIf="carForm.get('brand')?.invalid && carForm.get('brand')?.touched">
+      Marca es obligatorio.
     </div>
   </div>
 
@@ -22,8 +22,8 @@
       <option value="">Selecciona un modelo</option>
       <option *ngFor="let model of models" [value]="model">{{ model }}</option>
     </select>
-    <div *ngIf="carForm.get('model')?.invalid && carForm.get('model')?.touched">
-      Model is required.
+    <div class="error-msg" *ngIf="carForm.get('model')?.invalid && carForm.get('model')?.touched">
+      Modelo es obligatorio.
     </div>
   </div>
 
@@ -45,22 +45,22 @@
             class="form-control"
             [max]="today"
           />
-          <div
+          <div class="error-msg"
             *ngIf="
               detail.get('registrationDate')?.invalid &&
               detail.get('registrationDate')?.touched
             "
           >
-            Registration Date is required.
+            Fecha de registro es obligatorio.
           </div>
-          <div
+          <div class="error-msg"
             *ngIf="detail.get('registrationDate')?.errors?.['maxDateExceeded']"
           >
             La fecha no puede ser posterior a hoy ({{
               detail.get('registrationDate')?.errors?.['maxDateExceeded']?.max
             }}).
           </div>
-          <div
+          <div class="error-msg"
             *ngIf="
               carForm.get('carDetails')?.errors?.['registrationDateInvalid']
             "
@@ -77,14 +77,14 @@
             formControlName="manufactureYear"
             class="form-control"
           />
-          <div
+          <div class="error-msg"
             *ngIf="
               detail.get('manufactureYear')?.invalid &&
               detail.get('manufactureYear')?.touched
             "
           >
-            Manufacture Year is required and must be a valid year (1900 -
-            current year).
+            Año de fabricación es obligatorio y debe ser un año válido (1900 -
+            año actual).
           </div>
         </div>
 
@@ -96,12 +96,12 @@
               {{ currency }}
             </option>
           </select>
-          <div
+          <div class="error-msg"
             *ngIf="
               detail.get('currency')?.invalid && detail.get('currency')?.touched
             "
           >
-            Currency is required.
+            Moneda es obligatorio.
           </div>
         </div>
 
@@ -113,10 +113,10 @@
             formControlName="price"
             class="form-control"
           />
-          <div
+          <div class="error-msg"
             *ngIf="detail.get('price')?.invalid && detail.get('price')?.touched"
           >
-            Price is required and must be a positive number.
+            Precio es obligatorio y debe ser un número positivo.
           </div>
         </div>
 
@@ -127,13 +127,13 @@
             formControlName="licensePlate"
             class="form-control"
           />
-          <div
+          <div class="error-msg"
             *ngIf="
               detail.get('licensePlate')?.invalid &&
               detail.get('licensePlate')?.touched
             "
           >
-            License Plate is required.
+            Matrícula es obligatorio.
           </div>
         </div>
 
@@ -145,12 +145,12 @@
             formControlName="mileage"
             class="form-control"
           />
-          <div
+          <div class="error-msg"
             *ngIf="
               detail.get('mileage')?.invalid && detail.get('mileage')?.touched
             "
           >
-            Mileage is required and must be a positive number.
+            Kilometraje es obligatorio y debe ser un número positivo.
           </div>
         </div>
         <div class="form-group field-availability">

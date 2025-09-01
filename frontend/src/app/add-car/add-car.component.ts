@@ -9,7 +9,7 @@ import {
   FormGroup,
   NonNullableFormBuilder,
 } from '@angular/forms'
-import { CommonModule } from '@angular/common'
+import { CommonModule, formatDate } from '@angular/common'
 import { BrandsService } from '../brands.service'
 import { CarsService } from '../cars.service'
 import { CarDetailsDto, CarDetailsDtoForm, CreateCarDto, Currency } from '../car.interface'
@@ -218,11 +218,12 @@ export function maxDateValidator(maxDate?: Date): ValidatorFn {
       return null
     }
     
-   console.log(raw)
-   console.log(max)
+   //console.log("raw", raw)
+   //console.log("max", max)
     // comparar fechas (solo año/mes/día)
     if (raw > max) {
-      return { maxDateExceeded: { value: raw, max: max } }
+      const maxFormatted = formatDate(max, 'dd/MM/yyyy', "es-ES")
+      return { maxDateExceeded: { value: raw, max: maxFormatted } }
     }
 
     return null
