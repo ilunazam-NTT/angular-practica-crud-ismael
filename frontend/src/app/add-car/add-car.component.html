@@ -1,0 +1,188 @@
+<form [formGroup]="carForm" (ngSubmit)="onSubmit()">
+  <h1>Formulario de coches</h1>
+  <div class="form-group">
+    <label for="brand">Marca:</label>
+    <select
+      id="brand"
+      formControlName="brand"
+      (change)="onBrandChange($event)"
+      class="form-control"
+    >
+      <option value="">Selecciona una marca</option>
+      <option *ngFor="let brand of brands" [value]="brand">{{ brand }}</option>
+    </select>
+    <div class="error-msg" *ngIf="carForm.get('brand')?.invalid && carForm.get('brand')?.touched">
+      Marca es obligatorio.
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="model">Modelo</label>
+    <select id="model" formControlName="model" class="form-control">
+      <option value="">Selecciona un modelo</option>
+      <option *ngFor="let model of models" [value]="model">{{ model }}</option>
+    </select>
+    <div class="error-msg" *ngIf="carForm.get('model')?.invalid && carForm.get('model')?.touched">
+      Modelo es obligatorio.
+    </div>
+  </div>
+
+  <h2>Detalles de los coches</h2>
+  <div formArrayName="carDetails" class="car-details">
+    <div
+      *ngFor="let detail of carDetails.controls; let i = index"
+      [formGroupName]="i"
+      class="detail-group"
+    >
+      <h3>Detalle del coche #{{ i + 1 }}</h3>
+      <div class="detail-fields">
+        <div class="form-group">
+          <label for="registrationDate">Fecha de registro:</label>
+          <input
+            id="registrationDate"
+            type="date"
+            formControlName="registrationDate"
+            class="form-control"
+            [max]="today"
+          />
+          <div class="error-msg"
+            *ngIf="
+              detail.get('registrationDate')?.invalid &&
+              detail.get('registrationDate')?.touched
+            "
+          >
+            Fecha de registro es obligatorio.
+          </div>
+          <div class="error-msg"
+            *ngIf="detail.get('registrationDate')?.errors?.['maxDateExceeded']"
+          >
+            La fecha no puede ser posterior a hoy ({{
+              detail.get('registrationDate')?.errors?.['maxDateExceeded']?.max
+            }}).
+          </div>
+          <div class="error-msg"
+            *ngIf="
+              carForm.get('carDetails')?.errors?.['registrationDateInvalid']
+            "
+          >
+            La fecha de registro no puede ser anterior al año de fabricación.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="manufactureYear">Año de fabricación</label>
+          <input
+            id="manufactureYear"
+            type="number"
+            formControlName="manufactureYear"
+            class="form-control"
+          />
+          <div class="error-msg"
+            *ngIf="
+              detail.get('manufactureYear')?.invalid &&
+              detail.get('manufactureYear')?.touched
+            "
+          >
+            Año de fabricación es obligatorio y debe ser un año válido (1900 -
+            año actual).
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="currency">Moneda</label>
+          <select id="currency" formControlName="currency" class="form-control">
+            <option value="">Selecciona una moneda</option>
+            <option *ngFor="let currency of currencies" [value]="currency">
+              {{ currency }}
+            </option>
+          </select>
+          <div class="error-msg"
+            *ngIf="
+              detail.get('currency')?.invalid && detail.get('currency')?.touched
+            "
+          >
+            Moneda es obligatorio.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="price">Precio</label>
+          <input
+            id="price"
+            type="number"
+            formControlName="price"
+            class="form-control"
+          />
+          <div class="error-msg"
+            *ngIf="detail.get('price')?.invalid && detail.get('price')?.touched"
+          >
+            Precio es obligatorio y debe ser un número positivo.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="licensePlate">Matrícula</label>
+          <input
+            id="licensePlate"
+            formControlName="licensePlate"
+            class="form-control"
+          />
+          <div class="error-msg"
+            *ngIf="
+              detail.get('licensePlate')?.invalid &&
+              detail.get('licensePlate')?.touched
+            "
+          >
+            Matrícula es obligatorio.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="mileage">Kilometraje</label>
+          <input
+            id="mileage"
+            type="number"
+            formControlName="mileage"
+            class="form-control"
+          />
+          <div class="error-msg"
+            *ngIf="
+              detail.get('mileage')?.invalid && detail.get('mileage')?.touched
+            "
+          >
+            Kilometraje es obligatorio y debe ser un número positivo.
+          </div>
+        </div>
+        <div class="form-group field-availability">
+          <label for="availability">Disponibilidad</label>
+          <input
+            id="availability"
+            type="checkbox"
+            formControlName="availability"
+            class="form-control"
+          />
+        </div>
+      </div>
+      <button
+        *ngIf="i > 0"
+        type="button"
+        appButtonType="secondary"
+        (click)="removeCarDetail(i)"
+      >
+        x Quitar Detalle Coche
+      </button>
+    </div>
+  </div>
+
+  <button
+    type="button"
+    appButtonType="secondary"
+    (click)="addCarDetail()"
+    [disabled]="carDetails.invalid || brand.invalid || model.invalid"
+  >
+    + Añadir Detalle Coche
+  </button>
+  <button type="submit" appButtonType="primary" [disabled]="carForm.invalid">
+    Guardar
+  </button>
+</form>

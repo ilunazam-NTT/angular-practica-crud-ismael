@@ -1,0 +1,64 @@
+@if (car) {
+  <button appButtonType="primary" role="link" type="">Eliminar</button>
+  <button appButtonType="secondary" role="link" type="">Editar</button>
+
+  <h1>{{ car.brand }} -- {{ car.model }}</h1>
+  <p><b>ID:</b> {{ car.id }}</p>
+  <p><b>Total:</b> {{ car.total }}</p>
+  <br />
+  <h2>Stock de coches</h2>
+
+  <table class="car-details-table">
+    <thead>
+      <tr>
+        <th>Fecha de registro</th>
+        <th>Año de fabricación</th>
+        <th>Precio</th>
+        <th>Kilometraje</th>
+        <th>Matrícula</th>
+        <th>Disponibilidad</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (carDetail of car.carDetails; track carDetail) {
+        <tr>
+          <td>{{ carDetail.registrationDate | date: 'mediumDate' }}</td>
+          <td>{{ carDetail.manufactureYear }}</td>
+          <td>
+            {{
+              carDetail.price
+                | currency: carDetail.currency : 'symbol' : '4.2-2'
+            }}
+          </td>
+          <td>
+            {{ carDetail.mileage | number: '1.1-2' }} km
+            <span
+              [ngClass]="{
+                'low-mileage': (carDetail.mileage | mileageStatus) === 'Nuevo',
+                'medium-mileage':
+                  (carDetail.mileage | mileageStatus) === 'Km 0',
+                'high-mileage':
+                  (carDetail.mileage | mileageStatus) === 'Ocasión',
+                'mileage-status': true,
+              }"
+            >
+              {{ carDetail.mileage | mileageStatus }}
+            </span>
+          </td>
+          <td>{{ carDetail.licensePlate }}</td>
+          <td
+            [ngClass]="{
+              available: carDetail.availability,
+              'not-available': !carDetail.availability,
+              availability: true,
+            }"
+          >
+            {{ carDetail.availability ? 'Disponible' : 'No Disponible' }}
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+} @else {
+  <h1>No existe un coche con ese ID</h1>
+}
