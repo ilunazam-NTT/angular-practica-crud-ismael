@@ -1,0 +1,45 @@
+.notification {
+  position: relative;
+  padding: 20px 20px;
+  border-radius: 4px;
+  color: white;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  font-weight: 600;
+  min-width: 250px;
+  max-width: 350px;
+}
+.notification.success {
+  background-color: #4caf50;
+}
+.notification.error {
+  background-color: #f44336;
+}
+.notification.info {
+  background-color: #2196f3;
+}
+.icon {
+  margin-right: 10px;
+  font-size: 20px;
+  color: white;
+}
+
+.close-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+  color: #ccc;
+  outline: none;
+}

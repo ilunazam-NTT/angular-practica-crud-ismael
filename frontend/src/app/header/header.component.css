@@ -1,0 +1,35 @@
+.header {
+  background-color: black; /*#4a97e9;*/
+  color: white;
+  padding: 1rem;
+}
+.logo {
+  color: white;
+  font-weight: 600;
+  width: 500px;
+}
+.logo img {
+  width: auto;
+  max-height: 50px;
+  vertical-align: middle;
+}
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
+}
