@@ -2,14 +2,15 @@ import { inject, Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { Observable } from 'rxjs'
 import { Car, CarSummary, CreateCarDto } from './car.interface'
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CarsService {
-  private apiUrl = 'http://localhost:3000'
-
   private http = inject(HttpClient)
+  
+  private apiUrl = environment.apiUrl
 
   // Get all cars
   getCars(): Observable<CarSummary[]> {
@@ -27,8 +28,8 @@ export class CarsService {
   }
 
   // Update a car by ID
-  updateCar(id: string, car: CreateCarDto): Observable<CreateCarDto> {
-    return this.http.put<CreateCarDto>(`${this.apiUrl}/cars/${id}`, car)
+  updateCar(id: string, car: CreateCarDto): Observable<Car> {
+    return this.http.put<Car>(`${this.apiUrl}/cars/${id}`, car)
   }
 
   // Delete a car by ID
