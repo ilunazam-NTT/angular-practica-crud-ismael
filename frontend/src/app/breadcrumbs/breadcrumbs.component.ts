@@ -5,12 +5,12 @@ import {
   Router,
   RouterLink,
 } from '@angular/router'
-import { CommonModule } from '@angular/common'
+
 import { filter } from 'rxjs'
 
 @Component({
   selector: 'app-breadcrumbs',
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink],
   templateUrl: './breadcrumbs.component.html',
   styleUrl: './breadcrumbs.component.css',
 })

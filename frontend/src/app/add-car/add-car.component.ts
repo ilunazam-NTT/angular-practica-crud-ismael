@@ -9,7 +9,7 @@ import {
   FormGroup,
   NonNullableFormBuilder,
 } from '@angular/forms'
-import { CommonModule, formatDate } from '@angular/common'
+import { formatDate } from '@angular/common';
 import { BrandsService } from '../brands.service'
 import { CarsService } from '../cars.service'
 import { CarDetailsDto, CarDetailsDtoForm, CreateCarDto, Currency } from '../car.interface'
@@ -27,7 +27,7 @@ const MAX_STRING_LENGTH = 50
 
 @Component({
   selector: 'app-add-car',
-  imports: [ReactiveFormsModule, CommonModule, ButtonDirective],
+  imports: [ReactiveFormsModule, ButtonDirective],
   templateUrl: './add-car.component.html',
   styleUrl: './add-car.component.css',
 })

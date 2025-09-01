@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core'
-import { CommonModule } from '@angular/common'
+
 import { ButtonDirective } from '../button.directive'
 
 @Component({
   selector: 'app-modal',
-  imports: [CommonModule, ButtonDirective],
+  imports: [ButtonDirective],
   templateUrl: './modal.component.html',
   providers: [],
   styleUrl: './modal.component.css',

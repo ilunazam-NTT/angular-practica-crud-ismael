@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { DecimalPipe, CurrencyPipe, DatePipe } from '@angular/common'
 import { MileageStatusPipe } from '../mileage-status.pipe'
 import { ButtonDirective } from '../button.directive'
-import { CommonModule } from '@angular/common'
+
 import { RouterLink } from '@angular/router'
 import { ModalComponent } from '../modal/modal.component'
 import { NotificationService } from '../notification.service'
@@ -18,10 +18,9 @@ import { NotificationService } from '../notification.service'
     DatePipe,
     MileageStatusPipe,
     ButtonDirective,
-    CommonModule,
     RouterLink,
-    ModalComponent,
-  ],
+    ModalComponent
+],
   templateUrl: './car-details.component.html',
   styleUrl: './car-details.component.css',
 })

@@ -1,3 +1,5 @@
-<div class="loader-backdrop" *ngIf="visible">
-  <div class="loader-spinner"></div>
-</div>
+@if (visible) {
+  <div class="loader-backdrop">
+    <div class="loader-spinner"></div>
+  </div>
+}

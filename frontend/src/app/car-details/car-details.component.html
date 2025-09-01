@@ -2,7 +2,6 @@
   <button appButtonType="primary" role="link" (click)="modal.openModal()">
     Eliminar
   </button>
-  <!--(click)="modal.openModal()"-->
   <a appButtonType="secondary" [routerLink]="['/cars/edit/', car.id]">Editar</a>
 
   <h1>{{ car.brand }} -- {{ car.model }}</h1>
@@ -35,19 +34,22 @@
           </td>
           <td>
             {{ carDetail.mileage | number: '1.1-2' }} km
-            <ng-container *ngIf="carDetail.mileage | mileageStatus as status">
-              <span [ngClass]="status.cssClass + ' mileage-status'">
+            @if (carDetail.mileage | mileageStatus; as status) {
+              <span
+                [class.low-mileage]="status.cssClass === 'low-mileage'"
+                [class.medium-mileage]="status.cssClass === 'medium-mileage'"
+                [class.high-mileage]="status.cssClass === 'high-mileage'"
+                class="mileage-status"
+              >
                 {{ status.label }}
               </span>
-            </ng-container>
+            }
           </td>
           <td>{{ carDetail.licensePlate }}</td>
           <td
-            [ngClass]="{
-              available: carDetail.availability,
-              'not-available': !carDetail.availability,
-              availability: true,
-            }"
+            [class.available]="carDetail.availability"
+            [class.not-available]="!carDetail.availability"
+            class="availability"
           >
             {{ carDetail.availability ? 'Disponible' : 'No Disponible' }}
           </td>

@@ -1,11 +1,11 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core'
-import { CommonModule } from '@angular/common'
+
 import { Subscription } from 'rxjs'
 import { LoaderService } from '../loader.service'
 
 @Component({
   selector: 'app-loader',
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './loader.component.html',
   styleUrl: './loader.component.css',
 })
