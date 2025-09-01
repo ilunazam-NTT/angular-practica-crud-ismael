@@ -1,0 +1,30 @@
+.low-mileage {
+  color: black;
+  background-color: green;
+}
+.medium-mileage {
+  color: white;
+  background-color: blue;
+}
+.high-mileage {
+  color: black;
+  background-color: yellow;
+}
+.mileage-status {
+  float: right;
+  margin-right: 5px;
+  padding: 5px;
+  border-radius: 5px;
+  font-weight: 600;
+}
+
+.availability {
+  font-weight: 600;
+  color: white;
+}
+.available {
+  background-color: green;
+}
+.not-available {
+  background-color: red;
+}

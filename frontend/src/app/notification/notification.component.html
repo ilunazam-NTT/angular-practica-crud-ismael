@@ -1,0 +1,7 @@
+<div *ngIf="isVisible" class="notification" [ngClass]="type">
+  <span class="icon">{{ icon }}</span>
+  <span class="message">{{ message }}</span>
+  <button class="close-btn" aria-label="Close notification" (click)="close()">
+    ×
+  </button>
+</div>

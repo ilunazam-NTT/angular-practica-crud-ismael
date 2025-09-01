@@ -1,0 +1,24 @@
+<button
+  appButtonType
+  [cdkMenuTriggerFor]="menu"
+  class="example-standalone-item"
+>
+  Acciones
+</button>
+
+<ng-template #menu>
+  <div class="example-menu" cdkMenu>
+    <button cdkMenuItem class="example-menu-item" (click)="editCar(carId)">
+      Editar
+    </button>
+    <button cdkMenuItem class="example-menu-item" (click)="modal.openModal()">
+      Eliminar
+    </button>
+  </div>
+</ng-template>
+<app-modal
+  #modal
+  [itemName]="carBrand + '--' + carModel"
+  [carId]="carId"
+  (confirmDelete)="deleteCar($event)"
+></app-modal>
