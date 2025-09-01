@@ -10,18 +10,17 @@ import {
   withInterceptors,
 } from '@angular/common/http'
 import { routes } from './app.routes'
-import { AuthInterceptor } from './auth.interceptor'
-import { registerLocaleData } from '@angular/common'
-import localeEs from '@angular/common/locales/es'
-
-// Register the locale data
-registerLocaleData(localeEs)
+import { authInterceptor } from './auth.interceptor'
+import { loaderInterceptor } from './loader.interceptor'
 
 export const appConfig: ApplicationConfig = {
   providers: [
     { provide: LOCALE_ID, useValue: 'es-ES' },
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(withFetch(), withInterceptors([AuthInterceptor])),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([authInterceptor, loaderInterceptor])
+    ),
   ],
 }
