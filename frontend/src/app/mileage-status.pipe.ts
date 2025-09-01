@@ -4,15 +4,13 @@ import { Pipe, PipeTransform } from '@angular/core'
   name: 'mileageStatus',
 })
 export class MileageStatusPipe implements PipeTransform {
-  transform(mileage: number): string {
-    let mileageStatus = ''
-    if (mileage == 0) {
-      mileageStatus = 'Nuevo'
+  transform(mileage: number): { label: string; cssClass: string } {
+    if (mileage === 0) {
+      return { label: 'Nuevo', cssClass: 'low-mileage' }
     } else if (mileage < 100) {
-      mileageStatus = 'Km 0'
+      return { label: 'Km 0', cssClass: 'medium-mileage' }
     } else {
-      mileageStatus = 'Ocasión'
+      return { label: 'Ocasión', cssClass: 'high-mileage' }
     }
-    return mileageStatus
   }
 }

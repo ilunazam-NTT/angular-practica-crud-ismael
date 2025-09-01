@@ -1,6 +1,9 @@
 @if (car) {
-  <button appButtonType="primary" role="link" type="">Eliminar</button>
-  <button appButtonType="secondary" role="link" type="">Editar</button>
+  <button appButtonType="primary" role="link" (click)="modal.openModal()">
+    Eliminar
+  </button>
+  <!--(click)="modal.openModal()"-->
+  <a appButtonType="secondary" [routerLink]="['/cars/edit/', car.id]">Editar</a>
 
   <h1>{{ car.brand }} -- {{ car.model }}</h1>
   <p><b>ID:</b> {{ car.id }}</p>
@@ -32,18 +35,11 @@
           </td>
           <td>
             {{ carDetail.mileage | number: '1.1-2' }} km
-            <span
-              [ngClass]="{
-                'low-mileage': (carDetail.mileage | mileageStatus) === 'Nuevo',
-                'medium-mileage':
-                  (carDetail.mileage | mileageStatus) === 'Km 0',
-                'high-mileage':
-                  (carDetail.mileage | mileageStatus) === 'Ocasión',
-                'mileage-status': true,
-              }"
-            >
-              {{ carDetail.mileage | mileageStatus }}
-            </span>
+            <ng-container *ngIf="carDetail.mileage | mileageStatus as status">
+              <span [ngClass]="status.cssClass + ' mileage-status'">
+                {{ status.label }}
+              </span>
+            </ng-container>
           </td>
           <td>{{ carDetail.licensePlate }}</td>
           <td
@@ -62,3 +58,9 @@
 } @else {
   <h1>No existe un coche con ese ID</h1>
 }
+<app-modal
+  #modal
+  [itemName]="car?.brand + '--' + car?.model"
+  [carId]="car?.id!"
+  (confirmDelete)="deleteCar($event)"
+></app-modal>

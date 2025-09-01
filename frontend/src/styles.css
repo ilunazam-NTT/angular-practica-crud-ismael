@@ -94,3 +94,8 @@ table th {
   background-color: grey;
   color: white;
 }
+
+.error-msg {
+  color: red;
+  font-size: 0.8rem;
+}

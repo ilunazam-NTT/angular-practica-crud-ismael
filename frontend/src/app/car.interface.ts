@@ -1,3 +1,5 @@
+import { FormControl } from '@angular/forms'
+
 export enum Currency {
   EUR = 'EUR',
   GBP = 'GBP',
@@ -52,6 +54,15 @@ export interface CarDetailsDto {
   manufactureYear: number
   availability: boolean
   licensePlate: string
+}
+export interface CarDetailsDtoForm {
+  registrationDate: FormControl<string>
+  mileage: FormControl<number>
+  currency: FormControl<string> //Currency
+  price: FormControl<number>
+  manufactureYear: FormControl<number>
+  availability: FormControl<boolean>
+  licensePlate: FormControl<string>
 }
 
 // Definición de la interfaz para el coche

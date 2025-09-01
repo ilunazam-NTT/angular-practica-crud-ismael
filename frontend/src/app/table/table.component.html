@@ -1,12 +1,7 @@
-<h1>Listado coches</h1>
-<button
-  appButtonType="primary"
-  role="link"
-  [routerLink]="'/cars/create'"
-  type=""
->
+<h1>Listado coches (total: {{ cars.length }})</h1>
+<a appButtonType="primary" [routerLink]="'/cars/create'">
   Añadir Nuevo Coche
-</button>
+</a>
 <table class="cars-table">
   <thead>
     <tr>
@@ -26,7 +21,14 @@
         <td>{{ car.brand }}</td>
         <td>{{ car.model }}</td>
         <td>{{ car.total }}</td>
-        <td><app-menu-actions /></td>
+        <td>
+          <app-menu-actions
+            [carId]="car.id"
+            [carBrand]="car.brand"
+            [carModel]="car.model"
+            (carDeleted)="loadData()"
+          ></app-menu-actions>
+        </td>
       </tr>
     }
   </tbody>
