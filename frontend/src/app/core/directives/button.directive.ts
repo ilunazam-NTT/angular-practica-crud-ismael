@@ -7,11 +7,7 @@ export class ButtonDirective {
   @Input() set appButtonType(type: string) {
     this.setButtonType(type)
   }
-  /*
-  @Input() set appDisabled(isDisabled: boolean) {
-    this.setDisabledStyles(isDisabled);
-  }
-*/
+  
   private el = inject(ElementRef)
   private renderer = inject(Renderer2)
 

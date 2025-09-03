@@ -1,12 +1,13 @@
 import { inject, Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { Observable } from 'rxjs'
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BrandsService {
-  private apiUrl = 'http://localhost:3000' // Replace with your backend API URL
+  private apiUrl = environment.apiUrl // Replace with your backend API URL
 
   private http = inject(HttpClient)
   // Get all brands

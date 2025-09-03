@@ -1,10 +1,10 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core'
-import { ButtonDirective } from '../button.directive'
+import { ButtonDirective } from '../../../core/directives/button.directive'
 import { CdkMenuModule } from '@angular/cdk/menu'
 import { Router } from '@angular/router'
-import { CarsService } from '../cars.service'
-import { ModalComponent } from '../modal/modal.component'
-import { NotificationService } from '../notification.service'
+import { CarsService } from '../../../core/services/cars.service'
+import { ModalComponent } from '../../../shared/components/modal/modal.component'
+import { NotificationService } from '../../../core/services/notification.service'
 
 @Component({
   selector: 'app-menu-actions',

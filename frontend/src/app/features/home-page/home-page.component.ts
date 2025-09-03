@@ -1,5 +1,5 @@
 import { Component } from '@angular/core'
-import { TableComponent } from '../table/table.component'
+import { TableComponent } from '../cars/table/table.component'
 
 @Component({
   imports: [TableComponent],

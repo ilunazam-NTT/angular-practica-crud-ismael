@@ -2,7 +2,7 @@ import { inject } from '@angular/core'
 import { HttpEvent, HttpHandlerFn, HttpRequest } from '@angular/common/http'
 import { Observable } from 'rxjs'
 import { finalize } from 'rxjs/operators'
-import { LoaderService } from './loader.service'
+import { LoaderService } from '../services/loader.service'
 
 export function loaderInterceptor(
   req: HttpRequest<unknown>,

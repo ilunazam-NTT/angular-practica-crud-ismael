@@ -10,18 +10,17 @@ import {
   NonNullableFormBuilder,
 } from '@angular/forms'
 import { formatDate } from '@angular/common'
-import { BrandsService } from '../brands.service'
-import { CarsService } from '../cars.service'
+import { Router } from '@angular/router'
+import { BrandsService } from '../../../core/services/brands.service'
+import { CarsService } from '../../../core/services/cars.service'
 import {
-  Car,
   CarDetailsDto,
   CarDetailsDtoForm,
   CreateCarDto,
   Currency,
-} from '../car.interface'
-import { ButtonDirective } from '../button.directive'
-import { ActivatedRoute } from '@angular/router'
-import { NotificationService } from '../notification.service'
+} from '../../../core/interfaces/car.interface'
+import { ButtonDirective } from '../../../core/directives/button.directive'
+import { NotificationService } from '../../../core/services/notification.service'
 
 const LICENSE_PLATE_REGEX = /^[0-9]{4}\s?[A-Z]{3}$/
 const MAX_MANUFACTURE_DATE = new Date().getFullYear()
@@ -32,25 +31,22 @@ const MIN_MILEAGE = 0
 const MAX_STRING_LENGTH = 50
 
 @Component({
-  selector: 'app-edit-car',
+  selector: 'app-add-car',
   imports: [ReactiveFormsModule, ButtonDirective],
-  templateUrl: './edit-car.component.html',
-  styleUrl: './edit-car.component.css',
+  templateUrl: './add-car.component.html',
+  styleUrl: './add-car.component.css',
 })
-export class EditCarComponent implements OnInit {
+export class AddCarComponent implements OnInit {
   private formBuilder = inject(NonNullableFormBuilder)
   private brandService = inject(BrandsService)
   private carsService = inject(CarsService)
-  private route = inject(ActivatedRoute)
   private notificationService = inject(NotificationService)
+  private router = inject(Router)
 
   today = MAX_REGISTRATION_DATE
   brands: string[] = []
   models: string[] = []
-  carId: string | null = null
-  car: Car | null = null
-
-  carEditForm = this.formBuilder.group({
+  carForm = this.formBuilder.group({
     brand: ['', [Validators.required, Validators.maxLength(MAX_STRING_LENGTH)]],
     model: ['', [Validators.required, Validators.maxLength(MAX_STRING_LENGTH)]],
     carDetails: this.formBuilder.array<FormGroup<CarDetailsDtoForm>>(
@@ -63,87 +59,8 @@ export class EditCarComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadBrands()
-    //this.addCarDetail()
-
-    this.carId = this.route.snapshot.paramMap.get('id')!
-    this.loadData(this.carId)
-  }
-
-  loadData(id: string) {
-    this.carsService.getCarById(id).subscribe({
-      next: (response) => {
-        this.car = response
-
-        this.carEditForm.patchValue({
-          brand: this.car.brand,
-          //model: this.car.model,
-
-          carDetails: [],
-        })
-        this.loadModelsAndSetModel(this.car.brand, this.car.model)
-
-        // Luego, limpia el FormArray y añade los grupos
-        const carDetailsArray = this.carEditForm.get('carDetails') as FormArray
-        carDetailsArray.clear() // Limpia cualquier grupo anterior
-
-        this.car.carDetails.forEach((detail) => {
-          carDetailsArray.push(this.createCarDetailGroup(detail))
-        })
-      },
-      error: (error) => {
-        console.error('Error fetching data:', error)
-      },
-    })
-  }
-
-  loadModelsAndSetModel(brand: string, model: string) {
-    this.brandService.getModelByBrand(brand).subscribe({
-      next: (models) => {
-        this.models = models
-        // Solo setea el modelo si está en la lista de modelos cargados
-        if (models.includes(model)) {
-          this.carEditForm.get('model')?.setValue(model)
-        } else {
-          this.carEditForm.get('model')?.reset()
-        }
-      },
-      error: (error) => {
-        console.error('Error fetching models:', error)
-        this.models = []
-        this.carEditForm.get('model')?.reset()
-      },
-    })
-  }
-
-  createCarDetailGroup(detail: CarDetailsDto): FormGroup {
-    return this.formBuilder.group<CarDetailsDtoForm>({
-      registrationDate: this.formBuilder.control(
-        detail.registrationDate.substring(0, 10),
-        { validators: [Validators.required, maxDateValidator()] }
-      ),
-      mileage: this.formBuilder.control(detail.mileage, [
-        Validators.required,
-        Validators.min(MIN_MILEAGE),
-      ]),
-      currency: this.formBuilder.control(detail.currency, [
-        Validators.required,
-        currencyValidator(),
-      ]),
-      price: this.formBuilder.control(detail.price, [
-        Validators.required,
-        Validators.min(MIN_PRICE),
-      ]),
-      manufactureYear: this.formBuilder.control(detail.manufactureYear, [
-        Validators.required,
-        Validators.min(MIN_MANUFACTURE_DATE),
-        Validators.max(MAX_MANUFACTURE_DATE),
-      ]),
-      availability: this.formBuilder.control(detail.availability),
-      licensePlate: this.formBuilder.control(detail.licensePlate, [
-        Validators.required,
-        Validators.pattern(LICENSE_PLATE_REGEX),
-      ]),
-    })
+    this.addCarDetail()
+    //this.carDetails.controls.at(0)?.controls.
   }
 
   loadBrands(): void {
@@ -165,7 +82,7 @@ export class EditCarComponent implements OnInit {
       next: (data) => {
         this.models = data
         //this.carEditForm.get('model')?.reset()
-        this.carEditForm.get('model')?.setValue('') // Resetea el modelo al cambiar la marca
+        this.carForm.get('model')?.setValue('') // Resetea el modelo al cambiar la marca
       },
       error: (error) => {
         console.error('Error fetching models:', error)
@@ -174,15 +91,15 @@ export class EditCarComponent implements OnInit {
   }
 
   get carDetails() {
-    return this.carEditForm.controls.carDetails //get('carDetails') as FormArray
+    return this.carForm.controls.carDetails
   }
 
   get brand() {
-    return this.carEditForm.controls.brand
+    return this.carForm.controls.brand
   }
 
   get model() {
-    return this.carEditForm.controls.model
+    return this.carForm.controls.model
   }
 
   addCarDetail(): void {
@@ -224,9 +141,10 @@ export class EditCarComponent implements OnInit {
       }
     }
   }
+
   onSubmit(): void {
-    if (this.carEditForm.valid) {
-      const carDetailsArray = this.carEditForm.get('carDetails')
+    if (this.carForm.valid) {
+      const carDetailsArray = this.carForm.get('carDetails')
         ?.value as CarDetailsDto[]
 
       // Formatear la fecha de cada detalle del coche
@@ -236,8 +154,8 @@ export class EditCarComponent implements OnInit {
       }))
 
       const carData: CreateCarDto = {
-        brand: this.carEditForm.get('brand')?.value || '', // Proporciona un valor predeterminado
-        model: this.carEditForm.get('model')?.value || '',
+        brand: this.carForm.get('brand')?.value || '', // Proporciona un valor predeterminado
+        model: this.carForm.get('model')?.value || '',
         carDetails: formattedCarDetails,
       }
 
@@ -248,16 +166,17 @@ export class EditCarComponent implements OnInit {
   }
 
   saveData(carData: CreateCarDto) {
-    this.carsService.updateCar(this.carId!, carData).subscribe({
+    this.carsService.createCar(carData).subscribe({
       next: (response) => {
         console.log('Data sent successfully:', response)
         this.notificationService.showSuccess(
-          'El coche ha sido editado y guardado con éxito'
+          'El coche ha sido creado y guardado con éxito'
         )
+        this.router.navigate([''])
       },
       error: (error) => {
         console.error('Error sending data:', error)
-        this.notificationService.showError('El coche no se ha podido editar')
+        this.notificationService.showError('El coche no se ha podido crear')
       },
     })
   }
@@ -317,8 +236,8 @@ export function maxDateValidator(maxDate?: Date): ValidatorFn {
       return null
     }
 
-    console.log(raw)
-    console.log(max)
+    //console.log("raw", raw)
+    //console.log("max", max)
     // comparar fechas (solo año/mes/día)
     if (raw > max) {
       const maxFormatted = formatDate(max, 'dd/MM/yyyy', 'es-ES')

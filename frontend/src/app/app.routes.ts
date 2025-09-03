@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router'
-import { HomeComponent } from './home-page/home-page.component'
-import { AddCarComponent } from './add-car/add-car.component'
-import { CarDetailsComponent } from './car-details/car-details.component'
-import { EditCarComponent } from './edit-car/edit-car.component'
+import { HomeComponent } from './features/home-page/home-page.component'
+import { AddCarComponent } from './features/cars/add-car/add-car.component'
+import { CarDetailsComponent } from './features/cars/car-details/car-details.component'
+import { EditCarComponent } from './features/cars/edit-car/edit-car.component'
 
 export const routes: Routes = [
   {

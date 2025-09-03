@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core'
 
-import { ButtonDirective } from '../button.directive'
+import { ButtonDirective } from '../../../core/directives/button.directive'
 
 @Component({
   selector: 'app-modal',

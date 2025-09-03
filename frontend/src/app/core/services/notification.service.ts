@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core'
 import { Overlay, OverlayRef, OverlayConfig } from '@angular/cdk/overlay'
 import { ComponentPortal } from '@angular/cdk/portal'
-import { NotificationComponent } from './notification/notification.component'
+import { NotificationComponent } from '../../shared/components/notification/notification.component'
 
 @Injectable({
   providedIn: 'root',

@@ -1,14 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core'
-import { CarsService } from '../cars.service'
-import { Car } from '../car.interface'
-import { ActivatedRoute, Router } from '@angular/router'
+import { ActivatedRoute, Router, RouterLink } from '@angular/router'
 import { DecimalPipe, CurrencyPipe, DatePipe } from '@angular/common'
-import { MileageStatusPipe } from '../mileage-status.pipe'
-import { ButtonDirective } from '../button.directive'
-
-import { RouterLink } from '@angular/router'
-import { ModalComponent } from '../modal/modal.component'
-import { NotificationService } from '../notification.service'
+import { CarsService } from '../../../core/services/cars.service'
+import { Car } from '../../../core/interfaces/car.interface'
+import { MileageStatusPipe } from '../../../core/pipes/mileage-status.pipe'
+import { ButtonDirective } from '../../../core/directives/button.directive'
+import { ModalComponent } from '../../../shared/components/modal/modal.component'
+import { NotificationService } from '../../../core/services/notification.service'
 
 @Component({
   selector: 'app-car-details',

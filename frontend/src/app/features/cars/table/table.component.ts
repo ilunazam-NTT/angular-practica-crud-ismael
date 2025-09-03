@@ -1,9 +1,9 @@
 import { Component, OnInit, inject } from '@angular/core'
 import { MenuActionsComponent } from '../menu-actions/menu-actions.component'
-import { ButtonDirective } from '../button.directive'
+import { ButtonDirective } from '../../../core/directives/button.directive'
 import { RouterLink } from '@angular/router'
-import { CarsService } from '../cars.service'
-import { CarSummary } from '../car.interface'
+import { CarsService } from '../../../core/services/cars.service'
+import { CarSummary } from '../../../core/interfaces/car.interface'
 
 @Component({
   selector: 'app-table',

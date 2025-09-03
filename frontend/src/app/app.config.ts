@@ -10,8 +10,8 @@ import {
   withInterceptors,
 } from '@angular/common/http'
 import { routes } from './app.routes'
-import { authInterceptor } from './auth.interceptor'
-import { loaderInterceptor } from './loader.interceptor'
+import { authInterceptor } from './core/interceptors/auth.interceptor'
+import { loaderInterceptor } from './core/interceptors/loader.interceptor'
 
 export const appConfig: ApplicationConfig = {
   providers: [
