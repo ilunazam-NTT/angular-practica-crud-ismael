@@ -43,8 +43,8 @@ export class MenuActionsComponent {
     // Lógica para eliminar el coche
     console.log(`Deleting car with ID: ${carId}`)
 
-    this.carsService.deleteCar(carId).subscribe(
-      (response) => {
+    this.carsService.deleteCar(carId).subscribe({
+      next: (response) => {
         console.log('Data deleted successfully:', response)
         this.notificationService.showSuccess(
           `El coche ${this.carBrand} -- ${this.carModel} ha sido eliminado con éxito`
@@ -52,10 +52,10 @@ export class MenuActionsComponent {
         //window.location.reload();
         this.carDeleted.emit(carId) //send event to load table when car is deleted
       },
-      (error) => {
+      error: (error) => {
         console.error('Error deleting data:', error)
         this.notificationService.showError('El coche no se ha podido eliminar')
-      }
-    )
+      },
+    })
   }
 }

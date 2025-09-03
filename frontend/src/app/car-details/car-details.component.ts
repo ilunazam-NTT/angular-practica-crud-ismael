@@ -19,8 +19,8 @@ import { NotificationService } from '../notification.service'
     MileageStatusPipe,
     ButtonDirective,
     RouterLink,
-    ModalComponent
-],
+    ModalComponent,
+  ],
   templateUrl: './car-details.component.html',
   styleUrl: './car-details.component.css',
 })
@@ -42,14 +42,14 @@ export class CarDetailsComponent implements OnInit {
     }
   }
   loadData(id: string) {
-    this.carsService.getCarById(id).subscribe(
-      (response) => {
+    this.carsService.getCarById(id).subscribe({
+      next: (response) => {
         this.car = response
       },
-      (error) => {
+      error: (error) => {
         console.error('Error fetching data:', error)
-      }
-    )
+      },
+    })
   }
 
   deleteCar(carId: string | undefined) {
@@ -60,18 +60,18 @@ export class CarDetailsComponent implements OnInit {
     // Lógica para eliminar el coche
     //console.log(`Deleting car with ID: ${carId}`);
 
-    this.carsService.deleteCar(carId).subscribe(
-      (response) => {
+    this.carsService.deleteCar(carId).subscribe({
+      next: (response) => {
         console.log('Data deleted successfully:', response)
         this.notificationService.showSuccess(
           `El coche ${this.car?.brand} -- ${this.car?.model} ha sido eliminado con éxito`
         )
         this.router.navigate([''])
       },
-      (error) => {
+      error: (error) => {
         console.error('Error deleting data:', error)
         this.notificationService.showError('El coche no se ha podido eliminar')
-      }
-    )
+      },
+    })
   }
 }

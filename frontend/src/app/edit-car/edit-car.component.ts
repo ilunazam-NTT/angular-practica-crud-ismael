@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import {
   Validators,
   FormArray,
@@ -9,7 +9,7 @@ import {
   FormGroup,
   NonNullableFormBuilder,
 } from '@angular/forms'
-import { formatDate } from '@angular/common';
+import { formatDate } from '@angular/common'
 import { BrandsService } from '../brands.service'
 import { CarsService } from '../cars.service'
 import {
@@ -70,8 +70,8 @@ export class EditCarComponent implements OnInit {
   }
 
   loadData(id: string) {
-    this.carsService.getCarById(id).subscribe(
-      (response) => {
+    this.carsService.getCarById(id).subscribe({
+      next: (response) => {
         this.car = response
 
         this.carEditForm.patchValue({
@@ -90,15 +90,15 @@ export class EditCarComponent implements OnInit {
           carDetailsArray.push(this.createCarDetailGroup(detail))
         })
       },
-      (error) => {
+      error: (error) => {
         console.error('Error fetching data:', error)
-      }
-    )
+      },
+    })
   }
 
   loadModelsAndSetModel(brand: string, model: string) {
-    this.brandService.getModelByBrand(brand).subscribe(
-      (models) => {
+    this.brandService.getModelByBrand(brand).subscribe({
+      next: (models) => {
         this.models = models
         // Solo setea el modelo si está en la lista de modelos cargados
         if (models.includes(model)) {
@@ -107,12 +107,12 @@ export class EditCarComponent implements OnInit {
           this.carEditForm.get('model')?.reset()
         }
       },
-      (error) => {
+      error: (error) => {
         console.error('Error fetching models:', error)
         this.models = []
         this.carEditForm.get('model')?.reset()
-      }
-    )
+      },
+    })
   }
 
   createCarDetailGroup(detail: CarDetailsDto): FormGroup {
@@ -147,30 +147,30 @@ export class EditCarComponent implements OnInit {
   }
 
   loadBrands(): void {
-    this.brandService.getBrands().subscribe(
-      (data) => {
+    this.brandService.getBrands().subscribe({
+      next: (data) => {
         this.brands = data
       },
-      (error) => {
+      error: (error) => {
         console.error('Error fetching brands:', error)
-      }
-    )
+      },
+    })
   }
 
   onBrandChange(event: Event): void {
     const target = event.target as HTMLSelectElement
     const brandId = target.value // Ahora TypeScript sabe que target tiene una propiedad value
     // Lógica para manejar el cambio de marca
-    this.brandService.getModelByBrand(brandId).subscribe(
-      (data) => {
+    this.brandService.getModelByBrand(brandId).subscribe({
+      next: (data) => {
         this.models = data
         //this.carEditForm.get('model')?.reset()
         this.carEditForm.get('model')?.setValue('') // Resetea el modelo al cambiar la marca
       },
-      (error) => {
+      error: (error) => {
         console.error('Error fetching models:', error)
-      }
-    )
+      },
+    })
   }
 
   get carDetails() {
@@ -248,18 +248,18 @@ export class EditCarComponent implements OnInit {
   }
 
   saveData(carData: CreateCarDto) {
-    this.carsService.updateCar(this.carId!, carData).subscribe(
-      (response) => {
+    this.carsService.updateCar(this.carId!, carData).subscribe({
+      next: (response) => {
         console.log('Data sent successfully:', response)
         this.notificationService.showSuccess(
           'El coche ha sido editado y guardado con éxito'
         )
       },
-      (error) => {
+      error: (error) => {
         console.error('Error sending data:', error)
         this.notificationService.showError('El coche no se ha podido editar')
-      }
-    )
+      },
+    })
   }
 }
 

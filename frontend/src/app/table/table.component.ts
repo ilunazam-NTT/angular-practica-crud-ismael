@@ -24,13 +24,13 @@ export class TableComponent implements OnInit {
   }
 
   loadData() {
-    this.carsService.getCars().subscribe(
-      (response) => {
+    this.carsService.getCars().subscribe({
+      next: (response) => {
         this.cars = response
       },
-      (error) => {
+      error: (error) => {
         console.error('Error fetching data:', error)
-      }
-    )
+      },
+    })
   }
 }
