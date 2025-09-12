@@ -190,7 +190,12 @@ export class EditCarComponent implements OnInit {
   addCarDetail(): void {
     const carDetailGroup = this.formBuilder.group<CarDetailsDtoForm>({
       registrationDate: this.formBuilder.control('', {
-        validators: [Validators.required, maxDateValidator()],
+        validators: [
+          Validators.required,
+          maxDateValidator(
+            MAX_REGISTRATION_DATE.toISOString().substring(0, 10)
+          ),
+        ],
       }),
       mileage: this.formBuilder.control(0, [
         Validators.required,
