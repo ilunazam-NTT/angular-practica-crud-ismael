@@ -1,0 +1,12 @@
+<div class="modal">
+  <div class="modal-content">
+    <h3>Vas a eliminar el {{ data.itemName }}</h3>
+    <p>
+      ¿Estás seguro de que desea eliminar el coche? Esta acción no se puede
+      deshacer
+    </p>
+    <hr />
+    <button appButtonType="secondary" (click)="onCancel()">Cancelar</button>
+    <button appButtonType="primary" (click)="onConfirm()">Aceptar</button>
+  </div>
+</div>

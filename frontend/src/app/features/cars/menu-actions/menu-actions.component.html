@@ -11,14 +11,12 @@
     <button cdkMenuItem class="example-menu-item" (click)="editCar(carId)">
       Editar
     </button>
-    <button cdkMenuItem class="example-menu-item" (click)="modal.openModal()">
+    <button
+      cdkMenuItem
+      class="example-menu-item"
+      (click)="openDeleteDialog(carBrand + ' -- ' + carModel, carId)"
+    >
       Eliminar
     </button>
   </div>
 </ng-template>
-<app-modal
-  #modal
-  [itemName]="carBrand + '--' + carModel"
-  [carId]="carId"
-  (confirmDelete)="deleteCar($event)"
-></app-modal>

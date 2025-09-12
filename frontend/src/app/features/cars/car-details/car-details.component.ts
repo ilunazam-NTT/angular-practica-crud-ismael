@@ -5,8 +5,9 @@ import { CarsService } from '../../../core/services/cars.service'
 import { Car } from '../../../core/interfaces/car.interface'
 import { MileageStatusPipe } from '../../../core/pipes/mileage-status.pipe'
 import { ButtonDirective } from '../../../core/directives/button.directive'
-import { ModalComponent } from '../../../shared/components/modal/modal.component'
 import { NotificationService } from '../../../core/services/notification.service'
+import { Dialog } from '@angular/cdk/dialog'
+import { DeleteCarDialogComponent } from '../../../shared/components/delete-car-dialog/delete-car-dialog.component'
 
 @Component({
   selector: 'app-car-details',
@@ -17,7 +18,6 @@ import { NotificationService } from '../../../core/services/notification.service
     MileageStatusPipe,
     ButtonDirective,
     RouterLink,
-    ModalComponent,
   ],
   templateUrl: './car-details.component.html',
   styleUrl: './car-details.component.css',
@@ -25,6 +25,7 @@ import { NotificationService } from '../../../core/services/notification.service
 export class CarDetailsComponent implements OnInit {
   car: Car | null = null
 
+  dialog = inject(Dialog)
   carsService = inject(CarsService)
   route = inject(ActivatedRoute)
   router = inject(Router)
@@ -47,6 +48,18 @@ export class CarDetailsComponent implements OnInit {
       error: (error) => {
         console.error('Error fetching data:', error)
       },
+    })
+  }
+
+  openDeleteDialog(itemName: string, carId: string) {
+    const dialogRef = this.dialog.open(DeleteCarDialogComponent, {
+      data: { itemName, carId },
+    })
+
+    dialogRef.closed.subscribe((result) => {
+      if (result) {
+        this.deleteCar(carId)
+      }
     })
   }
 
