@@ -3,7 +3,7 @@ import {
   ApplicationConfig,
   provideZoneChangeDetection,
 } from '@angular/core'
-import { provideRouter } from '@angular/router'
+import { provideRouter, withComponentInputBinding } from '@angular/router'
 import {
   provideHttpClient,
   withFetch,
@@ -12,15 +12,16 @@ import {
 import { routes } from './app.routes'
 import { authInterceptor } from './core/interceptors/auth.interceptor'
 import { loaderInterceptor } from './core/interceptors/loader.interceptor'
+import { errorInterceptor } from './core/interceptors/error.interceptor'
 
 export const appConfig: ApplicationConfig = {
   providers: [
     { provide: LOCALE_ID, useValue: 'es-ES' },
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),
+    provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(
       withFetch(),
-      withInterceptors([authInterceptor, loaderInterceptor])
+      withInterceptors([authInterceptor, errorInterceptor, loaderInterceptor])
     ),
   ],
 }
