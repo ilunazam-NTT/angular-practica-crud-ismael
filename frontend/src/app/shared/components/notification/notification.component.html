@@ -1,0 +1,14 @@
+@if (isVisible) {
+  <div
+    class="notification"
+    [class.success]="type === 'success'"
+    [class.error]="type === 'error'"
+    [class.info]="type === 'info'"
+  >
+    <span class="icon">{{ icon }}</span>
+    <span class="message">{{ message }}</span>
+    <button class="close-btn" aria-label="Close notification" (click)="close()">
+      ×
+    </button>
+  </div>
+}

@@ -1,0 +1,203 @@
+<form [formGroup]="carEditForm" (ngSubmit)="onSubmit()">
+  <h1>Editar coches</h1>
+  <div class="form-group">
+    <label for="brand">Marca:</label>
+    <select
+      id="brand"
+      formControlName="brand"
+      (change)="onBrandChange($event)"
+      class="form-control"
+    >
+      <option value="">Selecciona una marca</option>
+      @for (brand of brands; track brand) {
+        <option [value]="brand">{{ brand }}</option>
+      }
+    </select>
+    @if (
+      carEditForm.get('brand')?.invalid && carEditForm.get('brand')?.touched
+    ) {
+      <div class="error-msg">Marca es obligatorio.</div>
+    }
+  </div>
+
+  <div class="form-group">
+    <label for="model">Modelo</label>
+    <select id="model" formControlName="model" class="form-control">
+      <option value="">Selecciona un modelo</option>
+      @for (model of models; track model) {
+        <option [value]="model">{{ model }}</option>
+      }
+    </select>
+    @if (
+      carEditForm.get('model')?.invalid && carEditForm.get('model')?.touched
+    ) {
+      <div class="error-msg">Modelo es obligatorio.</div>
+    }
+  </div>
+
+  <h2>Detalles de los coches</h2>
+  <div formArrayName="carDetails" class="car-details">
+    @for (detail of carDetails.controls; track detail; let i = $index) {
+      <div [formGroupName]="i" class="detail-group">
+        <h3>Detalle del coche #{{ i + 1 }}</h3>
+        <div class="detail-fields">
+          <div class="form-group">
+            <label for="registrationDate">Fecha de registro:</label>
+            <input
+              id="registrationDate"
+              type="date"
+              formControlName="registrationDate"
+              class="form-control"
+              [max]="today"
+            />
+            @if (
+              detail.get('registrationDate')?.invalid &&
+              detail.get('registrationDate')?.touched
+            ) {
+              @if (detail.get('registrationDate')?.errors?.['required']) {
+                <div class="error-msg">Fecha de registro es obligatorio.</div>
+              }
+              @if (
+                detail.get('registrationDate')?.errors?.['maxDateExceeded']
+              ) {
+                <div class="error-msg">
+                  La fecha no puede ser posterior a hoy ({{
+                    detail.get('registrationDate')?.errors?.['maxDateExceeded']
+                      ?.max
+                  }}).
+                </div>
+              }
+
+              @if (
+                carEditForm.get('carDetails')?.errors?.[
+                  'registrationDateInvalid'
+                ]
+              ) {
+                <div class="error-msg">
+                  La fecha de registro no puede ser anterior al año de
+                  fabricación.
+                </div>
+              }
+            }
+          </div>
+          <div class="form-group">
+            <label for="manufactureYear">Año de fabricación</label>
+            <input
+              id="manufactureYear"
+              type="number"
+              formControlName="manufactureYear"
+              class="form-control"
+            />
+            @if (
+              detail.get('manufactureYear')?.invalid &&
+              detail.get('manufactureYear')?.touched
+            ) {
+              <div class="error-msg">
+                Año de fabricación es obligatorio y debe ser un año válido (1900
+                - año actual).
+              </div>
+            }
+          </div>
+          <div class="form-group">
+            <label for="currency">Moneda</label>
+            <select
+              id="currency"
+              formControlName="currency"
+              class="form-control"
+            >
+              <option value="">Selecciona una moneda</option>
+              @for (currency of currencies; track currency) {
+                <option [value]="currency">
+                  {{ currency }}
+                </option>
+              }
+            </select>
+            @if (
+              detail.get('currency')?.invalid && detail.get('currency')?.touched
+            ) {
+              <div class="error-msg">Moneda es obligatorio.</div>
+            }
+          </div>
+          <div class="form-group">
+            <label for="price">Precio</label>
+            <input
+              id="price"
+              type="number"
+              formControlName="price"
+              class="form-control"
+            />
+            @if (detail.get('price')?.invalid && detail.get('price')?.touched) {
+              <div class="error-msg">
+                Precio es obligatorio y debe ser un número positivo.
+              </div>
+            }
+          </div>
+          <div class="form-group">
+            <label for="licensePlate">Matrícula</label>
+            <input
+              id="licensePlate"
+              formControlName="licensePlate"
+              class="form-control"
+            />
+            @if (
+              detail.get('licensePlate')?.invalid &&
+              detail.get('licensePlate')?.touched
+            ) {
+              <div class="error-msg">Matrícula es obligatorio.</div>
+            }
+          </div>
+          <div class="form-group">
+            <label for="mileage">Kilometraje</label>
+            <input
+              id="mileage"
+              type="number"
+              formControlName="mileage"
+              class="form-control"
+            />
+            @if (
+              detail.get('mileage')?.invalid && detail.get('mileage')?.touched
+            ) {
+              <div class="error-msg">
+                Kilometraje es obligatorio y debe ser un número positivo.
+              </div>
+            }
+          </div>
+          <div class="form-group field-availability">
+            <label for="availability">Disponibilidad</label>
+            <input
+              id="availability"
+              type="checkbox"
+              formControlName="availability"
+              class="form-control"
+            />
+          </div>
+        </div>
+        @if (i > 0) {
+          <button
+            type="button"
+            appButtonType="secondary"
+            (click)="removeCarDetail(i)"
+          >
+            x Quitar Detalle Coche
+          </button>
+        }
+      </div>
+    }
+  </div>
+
+  <button
+    type="button"
+    appButtonType="secondary"
+    (click)="addCarDetail()"
+    [disabled]="carDetails.invalid || brand.invalid || model.invalid"
+  >
+    + Añadir Detalle Coche
+  </button>
+  <button
+    type="submit"
+    appButtonType="primary"
+    [disabled]="carEditForm.invalid"
+  >
+    Guardar
+  </button>
+</form>

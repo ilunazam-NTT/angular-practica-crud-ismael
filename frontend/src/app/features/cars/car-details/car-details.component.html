@@ -1,0 +1,66 @@
+@if (car) {
+  <button
+    appButtonType="primary"
+    role="link"
+    (click)="openDeleteDialog(car.brand + ' -- ' + car.model, car.id)"
+  >
+    Eliminar
+  </button>
+  <a appButtonType="secondary" [routerLink]="['/cars/edit/', car.id]">Editar</a>
+
+  <h1>{{ car.brand }} -- {{ car.model }}</h1>
+  <p><b>ID:</b> {{ car.id }}</p>
+  <p><b>Total:</b> {{ car.total }}</p>
+  <br />
+  <h2>Stock de coches</h2>
+
+  <table class="car-details-table">
+    <thead>
+      <tr>
+        <th>Fecha de registro</th>
+        <th>Año de fabricación</th>
+        <th>Precio</th>
+        <th>Kilometraje</th>
+        <th>Matrícula</th>
+        <th>Disponibilidad</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (carDetail of car.carDetails; track carDetail) {
+        <tr>
+          <td>{{ carDetail.registrationDate | date: 'mediumDate' }}</td>
+          <td>{{ carDetail.manufactureYear }}</td>
+          <td>
+            {{
+              carDetail.price
+                | currency: carDetail.currency : 'symbol' : '4.2-2'
+            }}
+          </td>
+          <td>
+            {{ carDetail.mileage | number: '1.1-2' }} km
+            @if (carDetail.mileage | mileageStatus; as status) {
+              <span
+                [class.low-mileage]="status.cssClass === 'low-mileage'"
+                [class.medium-mileage]="status.cssClass === 'medium-mileage'"
+                [class.high-mileage]="status.cssClass === 'high-mileage'"
+                class="mileage-status"
+              >
+                {{ status.label }}
+              </span>
+            }
+          </td>
+          <td>{{ carDetail.licensePlate }}</td>
+          <td
+            [class.available]="carDetail.availability"
+            [class.not-available]="!carDetail.availability"
+            class="availability"
+          >
+            {{ carDetail.availability ? 'Disponible' : 'No Disponible' }}
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+} @else {
+  <h1>No existe un coche con ese ID</h1>
+}

@@ -1,0 +1,10 @@
+<nav>
+  @for (breadcrumb of breadcrumbs; track breadcrumb; let last = $last) {
+    @if (!last) {
+      <a [routerLink]="breadcrumb.url">{{ breadcrumb.label }}</a> &gt;
+    }
+    @if (last) {
+      <span>{{ breadcrumb.label }}</span>
+    }
+  }
+</nav>
